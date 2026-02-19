@@ -1,0 +1,63 @@
+module DataTypes where
+import Daml.Script
+import DA.Time
+import DA.Date
+
+----------------- Numbers -----------------
+testNUmbers: Script()
+testNUmbers = script do
+    let 
+        intVal: Int
+        intVal = 42
+    debug $ intVal
+
+    let 
+        amount: Numeric 5
+        amount = 123.12345
+        -- below will produce an error because the number has more than 5 decimal places
+        -- amount = 123.123456
+
+    debug $ amount
+
+    let 
+        decimalVal: Decimal
+        decimalVal = 123.1234567890
+        -- decimalVal = 123.12345678901 -- will produce an error because the number has more than 10 decimal places
+
+    debug $ decimalVal
+
+----------------- Text -----------------
+testText: Script()
+testText = script do
+    let 
+        textVal: Text
+        textVal = "Hello, Daml!"
+    debug $ textVal
+
+----------------- Bool -----------------
+testBool: Script()
+testBool = script do
+    let 
+        boolVal: Bool
+        boolVal = True
+    debug $ boolVal
+
+------------------ Time -----------------
+testTime: Script()
+testTime = script do
+    now <- getTime
+    debug $ "Time now: " <> show now
+
+    let
+        dob: Date
+        dob = date 1995 Apr 6
+
+        tob: Time
+        tob = time dob 14 30 00
+
+        age: RelTime
+        age = subTime now tob
+
+    debug $ "Date of Birth: " <> show dob
+    debug $ "Time of Birth: " <> show tob
+    debug $ "Age in seconds: " <> show age

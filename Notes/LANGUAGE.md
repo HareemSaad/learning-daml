@@ -81,7 +81,16 @@ debug $ <function call>
 ```
 
 ## Data Types
-- `Int`: Integer numbers
+- Numbers
+  - Int (64 bit signed integer)
+  - Numeric n (decimals with precision of 36 and scale of n, n is the number of digits after the decimal point)
+  - Decimal (decimals with precision of 36 and scale of 10)
+- Text (Text values are strings of characters enclosed by double quotes) (Text literals support backslash escapes to include their delimiter (\") and a backslash itself (\\))
+- Boolean
+- Time
+  - Date (date 2007 Apr 5	Permissible dates range from 0001-01-01 to 9999-12-31 (using a year-month-day format).)
+  - Time (time (date 2007 Apr 5) 14 30 05	Time values have microsecond precision with allowed range from 0001-01-01 to 9999-12-31 (using a year-month-day format))
+  - RelTime (seconds 1, seconds (-2)	RelTime values have microsecond precision with allowed range from -9,223,372,036,854,775,808ms to 9,223,372,036,854,775,807ms There are no literals for RelTime. Instead they are created using one of days, hours, minutes, seconds, milliseconds and microseconds (to get these functions, import DA.Time).)
 
 ## conditional expressions
 
