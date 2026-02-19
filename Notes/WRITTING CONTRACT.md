@@ -13,6 +13,9 @@ Define module at the top of the file:
 module <file-name> where
 ```
 
+- has to match the file name (without the .daml extension)
+- has to be at the top of the file, before any imports or code
+
 ## Testing Functions
 
 To test a function, you need to write a script in `daml/Main.daml`:

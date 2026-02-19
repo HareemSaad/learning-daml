@@ -1,0 +1,51 @@
+module Functions where
+import Daml.Script
+
+------------------------------------------------------------
+
+increment: Int -> Int
+increment x = x + 1
+
+-- no input arguments
+-- empty parentheses indicates that the script returns nothing
+testIncrement: Script()
+testIncrement = script do
+  -- different types of printing functions
+  let result = increment 5
+  debug result
+
+  debug $ increment 10
+
+------------------------------------------------------------
+
+add : Int -> Int -> Int
+add x y = x + y
+
+testAdd: Script()
+testAdd = script do
+  let sum1 = add 3 4
+  debug sum1
+
+------------------------------------------------------------
+
+mul: Int -> Int -> Int
+mul x y = x * y
+
+testMul: Script()
+testMul = script do
+  let product1 = mul 5 6
+  debug product1
+
+------------------------------------------------------------
+
+factorial: Int -> Int
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
+
+testFactorial: Script()
+testFactorial = script do
+  let fact5 = factorial 5
+  debug fact5
+
+  let fact0 = factorial 0
+  debug fact0
