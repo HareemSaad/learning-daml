@@ -1,0 +1,18 @@
+module HelloWorld where
+
+-- import script library  
+import Daml.Script
+
+-- define function
+hello: Text -> Text
+
+-- call function
+hello name = "Hello, " <> name <> "!"
+
+-- test function
+-- to run the test, click Script results over the testHello function (only in daml IDE)
+-- define a script to test the hello function
+testHello: Script()
+testHello = script do
+  -- call the hello function and print the result
+  debug $ hello "DAML"
