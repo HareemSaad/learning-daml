@@ -1,0 +1,51 @@
+module Lab1 where
+import Daml.Script
+
+------------------------------------------------------------------------------------------------------------------------------
+-- Problem 1: Write a function named quadFunction that takes three integers for x, y, and z. It returns the value of 3x^2 + 2y + z
+------------------------------------------------------------------------------------------------------------------------------
+
+quadFunction: Int -> Int -> Int -> Int
+quadFunction x y z = 3 * (x ^ 2) + 2 * y + z
+testQuadFunction: Script()
+testQuadFunction = script do
+  let result = quadFunction 1 2 3
+  debug result
+
+------------------------------------------------------------------------------------------------------------------------------
+-- Problem 2: Write a lambda function in the test script that does the same calculation as the quadFunction described above and prints the same result as shown above.
+------------------------------------------------------------------------------------------------------------------------------
+
+testLambdaQuadFunction: Script()
+testLambdaQuadFunction = script do
+  let lambdaQuadFunction = \x y z -> 3 * (x ^ 2) + 2 * y + z
+  let result = lambdaQuadFunction 1 2 3
+  debug result
+
+------------------------------------------------------------------------------------------------------------------------------
+-- Problem 3: 
+-- a: Write a function named doubleMe that takes an integer and returns its double.
+-- b: Using the doubleMe function, write another function called doubleUs that takes two integers, doubles each of them, adds them up and returns the result.
+-- c: Write an expression in the test-script using doubleUs with an inFix notation to get the same result as
+----------------------------------------------------------------------------------------------------------------------------------------------
+
+doubleMe: Int -> Int
+doubleMe x = 2 * x
+
+testDoubleMe: Script()
+testDoubleMe = script do
+  let result = doubleMe 5
+  debug result
+
+doubleUs: Int -> Int -> Int
+doubleUs x y = doubleMe x + doubleMe y
+
+testDoubleUs: Script()
+testDoubleUs = script do
+  let result = doubleUs 3 4
+  debug result
+
+testLamdaInfixDoubleUs: Script()
+testLamdaInfixDoubleUs = script do
+  let result = (\x y -> x `doubleUs` y) 3 4
+  debug result
