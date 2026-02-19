@@ -92,6 +92,11 @@ debug $ <function call>
   - Time (time (date 2007 Apr 5) 14 30 05	Time values have microsecond precision with allowed range from 0001-01-01 to 9999-12-31 (using a year-month-day format))
   - RelTime (seconds 1, seconds (-2)	RelTime values have microsecond precision with allowed range from -9,223,372,036,854,775,808ms to 9,223,372,036,854,775,807ms There are no literals for RelTime. Instead they are created using one of days, hours, minutes, seconds, milliseconds and microseconds (to get these functions, import DA.Time).)
 
+## Data Structures
+- Lists: [a] is the built-in data type for a list of elements of type a. The empty list is denoted by [] and [1, 3, 2] is an example of a list of type [Int].
+- Tuples: type MyTuple = (Int, Text)
+- Sets
+- Maps
 ## conditional expressions
 
 - `do`: runs multiple expressions in sequence

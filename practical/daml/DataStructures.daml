@@ -1,0 +1,115 @@
+module DataStructures where
+import Daml.Script
+import DA.List
+import DA.Set as Set
+import DA.Map as Map
+
+----------------- Lists -----------------
+testLists: Script()
+testLists = script do
+    let
+        list1: [Int]
+        list1 = [1, 2, 3, 5, 4, 4]
+
+        list2: [Text]
+        list2 = ["Daml", "is", "fun"]
+        rangeList = [1..10]
+        evenList = [2,4..20]
+
+    debug $ "List of integers: " <> show list1
+    debug $ "List of text: " <> show list2
+
+    -- List operations
+    let headOfList1 = head list1
+    debug $ "Head of list1: " <> show headOfList1
+
+    let tailOfList1 = tail list1
+    debug $ "Tail of list1: " <> show tailOfList1
+
+    let lengthOfList1 = length list1
+    debug $ "Length of list1: " <> show lengthOfList1
+
+    let reversedList1 = reverse list1
+    debug $ "Reversed list1: " <> show reversedList1
+
+    let concatenatedList = list1 ++ [6, 7, 8]
+    debug $ "Concatenated list: " <> show concatenatedList
+
+    let mappedList = map (\x -> x * 2) list1
+    debug $ "Mapped list (doubled): " <> show mappedList
+
+    let filteredList = DA.List.filter (\x -> x % 2 == 0) list1
+    debug $ "Filtered list (even numbers): " <> show filteredList
+
+    let sortedList = sortBy compare list1
+    debug $ "Sorted list: " <> show sortedList
+
+    let initialList = init list1
+    debug $ "Initial list (all but last): " <> show initialList
+
+    let takeFirst3 = take 3 list1
+    debug $ "First 3 elements of list1: " <> show takeFirst3
+
+    let elemExists = elem 3 list1
+    debug $ "Does 3 exist in list1? " <> show elemExists    
+
+    let sumOfList1 = sum list1
+    debug $ "Sum of elements in list1: " <> show sumOfList1
+
+    let productOfList1 = product list1
+    debug $ "Product of elements in list1: " <> show productOfList1 
+
+    debug $ "Range list from 1 to 10: " <> show rangeList
+
+    debug $ "Even numbers from 2 to 20: " <> show evenList
+
+    debug $ "Range list and even list: " <> show rangeList <> show evenList
+
+    debug $ "Prepend 0 to list1: " <> show (0 :: list1)
+
+------------------ Tuples -----------------
+testTuples: Script()
+testTuples = script do
+    let
+        tuple1: (Int, Text)
+        tuple1 = (42, "Daml")
+
+        tuple_n = (1, "hello", False, [2..8])
+    
+    debug $ "Tuple of integer and text: " <> show tuple1
+    debug $ "Tuple with multiple types: " <> show tuple_n
+
+    debug $ "First element of tuple1: " <> show (fst tuple1)
+    debug $ "Second element of tuple1: " <> show (snd tuple1)
+    debug $ "First element of tuple_n: " <> show (tuple_n._1)
+    debug $ "Second element of tuple_n: " <> show (tuple_n._2)
+
+------------------- Set -----------------
+testSet: Script()
+testSet = script do
+    let
+        set1: Set Int
+        set1 = Set.empty
+    let set1 = Set.fromList [1, 2, 3, 4, 5]
+    let set2 = Set.insert 6 set1
+    let set3 = Set.insert 6 set2
+    
+    debug $ "Set of integers (duplicates removed): " <> show set1
+    debug $ "Set after inserting 6: " <> show set2
+    debug $ "Set after inserting 6 again (no change): " <> show set3
+
+------------------- Map -----------------
+testMap: Script()
+testMap = script do
+    let
+        map1: Map Text Int
+        map1 = Map.empty
+    let map1 = Map.fromList [("one", 1), ("two", 2), ("three", 3)]
+
+    debug $ "Map of text to integers: " <> show map1
+    debug $ "Value for key 'two': " <> show (Map.lookup "two" map1)
+    debug $ "size of map: " <> show (Map.size map1)
+    let map2 = Map.insert "four" 4 map1
+    debug $ "Map after inserting ('four', 4): " <> show map2
+    let map3 = Map.delete "two" map2
+    debug $ "Map after deleting key 'two': " <> show map3
