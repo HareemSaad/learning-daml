@@ -1,0 +1,84 @@
+module FunctionConventions where
+import Daml.Script
+
+---------- Associative function example ----------
+associative: Int -> Int -> Int
+associative x y = x + y
+
+testAssociative: Script()
+testAssociative = script do
+  -- (y + z) + x == x + (z + y)
+  let result1 = associative (associative 1 2) 3
+  let result2 = associative 1 (associative 2 3)
+  debug result1
+  debug result2
+  debug $ "Are the results equal? " <> (if result1 == result2 then "Yes" else "No")
+
+---------- Left Associative function example ----------
+leftAssociative: Int -> Int -> Int
+leftAssociative x y = x - y
+
+testLeftAssociative: Script()
+testLeftAssociative = script do
+  -- (y - z) - x != x - (z - y)
+  let result1 = leftAssociative (leftAssociative 5 2) 1 -- (5 - 2) - 1 = 2
+  let result2 = leftAssociative 5 (leftAssociative 2 1) -- 5 - (2 - 1) = 4
+  debug result1
+  debug result2
+  debug $ "Are the results equal? " <> (if result1 == result2 then "Yes" else "No")
+
+---------- Right Associative function example ----------
+rightAssociative: Int -> Int -> Int
+rightAssociative x y = x / y
+
+-- will fail to compile because of division by zero
+
+-- testRightAssociative: Script()
+-- testRightAssociative = script do
+--   -- (y / z) / x != x / (z / y)
+--   let result1 = rightAssociative (rightAssociative 10 2) 5 -- (10 / 2) / 5 = 1
+--   let result2 = rightAssociative 10 (rightAssociative 2 5) -- 10 / (2 / 5) = 25
+--   debug result1
+--   debug result2
+--   debug $ "Are the results equal? " <> (if result1 == result2 then "Yes" else "No") 
+
+
+---------- Currying example ----------
+add: Int -> Int -> Int
+add x y = x + y
+
+increment: Int -> Int
+increment = add 1
+-- * can also be written as:
+-- increment x = add 1 x
+
+testCurrying: Script()
+testCurrying = script do
+  -- * 5 goes into add's second argument, returning a new function that takes one argument and adds 1 to it
+  let result1 = increment 5 -- should be 6
+  debug result1
+
+---------- Infix example with function ----------
+infix_add: Int -> Int -> Int
+infix_add x y = x `add` y
+
+testInfix: Script()
+testInfix = script do
+  let result1 = infix_add 3 4 -- should be 7
+  debug result1
+
+---------- Prefix example with operator ----------
+
+prefix_mul: Int -> Int -> Int
+prefix_mul x y = (*) x y
+
+testInfixMul: Script()
+testInfixMul = script do
+  let result1 = prefix_mul 5 6 -- should be 30
+  debug result1
+
+--------------- Lambda example ---------------
+testLambda: Script()
+testLambda = script do
+  let result1 = (\x -> x * x) 5 -- should be 25
+  debug result1
