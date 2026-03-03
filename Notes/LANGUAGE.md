@@ -106,6 +106,25 @@ debug $ <function call>
 - Sets
 - Maps
 
+### Custom Records
+
+Define custom data types using the `data` keyword with named fields. Syntax:
+
+```daml
+data TypeName = TypeName with
+  field1 : Type1
+  field2 : Type2
+  deriving (Eq, Show)  -- optional: inherit standard behaviors
+```
+
+**Creating instances**: Use `TypeName with field1 = value1, field2 = value2`
+
+**Accessing fields**: Use dot notation `instance.fieldName`
+
+**Updating records**: Create a modified copy with `instance with fieldName = newValue` without mutating the original
+
+Use custom records to group related data together, improve type safety, and make code more readable and maintainable. The `deriving` clause automatically implements equality comparison (`Eq`) and string representation (`Show`) for your type.
+
 ## Conditional Expressions
 
 ### Control Flow Patterns
@@ -139,6 +158,8 @@ Each pattern offers different readability and maintainability benefits depending
 - `foldr`: Processes list right-to-left. Use when the associativity of right-to-left matters or when working with infinite lists.
 
 Syntax: `foldl (binary_function) initial_value list` or `foldr (binary_function) initial_value list`
+
+## Records
 
 ## Essential Functions for Scripting and Debugging
 

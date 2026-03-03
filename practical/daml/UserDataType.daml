@@ -1,0 +1,29 @@
+module UserDataType where
+
+-- We have to import like this because of conflict naming of Script.User and UserDataType.User in the current namespace
+import Daml.Script (Script, script)  
+
+-- A custom record to represent a user in our system.
+data User = User with
+  username : Text
+  userId : Int
+  isActive : Bool
+    deriving (Eq, Show) -- derive (inherit) common behaviors like equality and string representation for our User type
+
+runRecordExample : Daml.Script.Script ()
+runRecordExample = script do
+  -- Create an instance of our User record
+  let 
+    alice = User with  -- explicit form Module.DataTypeName since there is already a User type in Daml.Script
+        username = "Alice"
+        userId = 101
+        isActive = True
+
+  -- Access data using dot notation
+  debug $ "Username: " <> alice.username
+  debug $ "User ID: " <> show alice.userId
+
+  -- You can also create a new record based on an old one
+  let 
+    aliceDeactivated = alice with isActive = False
+  debug $ "Deactivated user's status: " <> show aliceDeactivated.isActive
