@@ -151,7 +151,25 @@ functionName : ClassName a => a -> ReturnType
 
 **When to use**: Type classes provide shared behaviors across unrelated types. Use them to write generic, reusable functions that work with any type that implements the class. This avoids code duplication and allows flexible, polymorphic code that can work with current and future types.
 
-## Conditional Expressions
+### Type Variables
+
+A type variable is a placeholder for any concrete type, written as a single lowercase letter (e.g., `a`, `b`, `t`). Type variables enable generic functions that work with multiple different types without duplicating code.
+
+**Syntax**: Type variables appear in function signatures:
+
+```daml
+genericFunction : a -> b -> c  -- a, b, c are type variables
+```
+
+**Type class constraints**: Restrict what types a variable can represent. Use `=>` to specify requirements:
+
+```daml
+constrainedFunction : Show a => a -> Text  -- 'a' must be an instance of Show class
+```
+
+The constraint `Show a =>` means the function can accept any type `a` as long as it implements the `Show` type class (enabling conversion to text).
+
+**When to use**: Write generic functions with type variables when the same logic applies to multiple types. Use type class constraints to ensure types have the necessary capabilities without losing flexibility. This creates reusable, type-safe code that works with any type meeting the constraints, including types defined in the future.
 
 ### Control Flow Patterns
 

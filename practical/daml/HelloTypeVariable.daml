@@ -1,0 +1,23 @@
+module HelloTypeVariable where
+
+import Daml.Script
+
+-- This function takes a value of any type 'a' and returns a Text.
+-- The 'Show a =>' part is the constraint.
+hello : Show a => a -> Text
+hello x =
+  -- The 'show' function is available because we know 'a' is a member of the Show class.
+  "Hello, " <> show x <> "!"
+
+runHelloExample : Script ()
+runHelloExample = script do
+  -- We can call the same 'hello' function with different data types...
+  debug $ hello 123       -- Works because Int is in the Show class
+  debug $ hello ["a","b"] -- Works because List is in the Show class
+  debug $ hello (1, True) -- Works because Tuple is in the Show class
+
+--A type variable is a placeholder in a function or data type definition that can represent any concrete type. By convention, they are written as single, lowercase letters like a, b, or t.
+
+--- While type variables allow for flexibility, sometimes you need to guarantee that a type has certain capabilities. For example, you can't sort a list of items unless you know how to compare them.
+
+-- This is where type classes come in. A type class is an interface that defines a set of required behaviors. We can then use a type class constraint to require that a type variable must be a member of a specific class.
