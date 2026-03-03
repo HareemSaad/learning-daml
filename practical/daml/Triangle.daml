@@ -1,0 +1,41 @@
+module Triangle where
+
+import Daml.Script
+import DA.List (head, tail, last, init)
+import DA.Math (sqrt)
+
+triangleArea : [Decimal] -> Either Text Decimal
+triangleArea sides
+    | 0.0 `elem` sides  -- To use infix notation, surround backticks around the function name e.g. elem to `elem`
+    = Left "Error: Side of a triangle cannot be 0.0"
+    | ((length sides) < 3) = Left "Error: Triangle has 3 sides"
+    | ((sum (init sides)) <= last sides)
+    = Left
+        "Error: This can't be a triangle as sum of any two sides must be greater than the third"
+    | otherwise
+    = Right
+        (sqrt (s * (s - (head sides)) * (s - (head (tail sides)))
+            * (s - (last sides))))
+    where
+        s = (sum sides) / 2.0
+
+
+testTriangle : Script ()
+testTriangle = script do 
+
+    debug $ triangleArea [4.0, 2.0, 5.0]
+    debug $ triangleArea [1.0, 2.0, 3.0]
+    debug $ triangleArea [1.0, 2.0]
+    debug $ triangleArea [1.0, 2.0, 0.0]
+
+    return ()
+
+-- The Either type is used when a computation can result in one of two different types of values, typically representing a success or an error.
+
+-- Think of a function that returns an Either as a fork in the road. The computation will either go down the Left path (conventionally, the error path) or the Right path (conventionally, the success path).
+
+-- An Either can have one of two forms:
+
+-- Left a: Represents the first possible outcome (e.g., an error of type a).
+-- Right b: Represents the second possible outcome (e.g., a success value of type b).
+-- This is extremely useful for validation functions, where an operation can either fail with a reason or succeed with a result. Let’s demonstrate an example.

@@ -209,6 +209,30 @@ case optionalValue of
 
 **When to use**: Return `Optional` from functions that might fail or produce no result (e.g., safe division by zero, searching for an element that may not exist, parsing that may fail). This forces callers to explicitly handle the possibility of absence, eliminating common programming errors from unexpected null/None values.
 
+## Either Type
+
+The `Either` type represents a value that is one of two possible types, typically used to communicate success or failure with additional information. Unlike `Optional`, `Either` can return either an error message or a success result.
+
+**Forms**:
+
+- `Left a`: Represents the first outcome, conventionally an error of type `a`
+- `Right b`: Represents the second outcome, conventionally a success value of type `b`
+
+**Creating Either values**:
+
+- `Left errorValue`: Wrap an error or failure reason
+- `Right successValue`: Wrap a successful result
+
+**Handling Either values**: Use `case` expressions to branch on the outcome:
+
+```daml
+case eitherValue of
+  Left error -> -- handle the error
+  Right success -> -- handle the success value
+```
+
+**When to use**: Return `Either` from validation functions or operations that can fail with meaningful error information (e.g., parsing with error messages, computations with validation rules). This allows callers to distinguish between different failure types and handle errors appropriately, making error handling explicit and recoverable.
+
 ## Records
 
 ## Essential Functions for Scripting and Debugging
