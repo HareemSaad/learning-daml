@@ -125,6 +125,21 @@ debug $ <function call>
 
 Each pattern offers different readability and maintainability benefits depending on the use case.
 
+## Iteration
+
+### Functional Programming Patterns
+
+**Recursion**: Functions call themselves with modified arguments to solve problems. Use guards to define base cases (when to stop recursing) and recursive cases (when to recurse again).
+
+**Map**: Applies a function to every element in a list and returns a new list of transformed elements. Syntax: `map (function) list`. Use when you need to transform all elements in a list while keeping the list structure.
+
+**Fold**: Reduces a list to a single value by accumulating results through repeated application of a function. Takes three arguments: a binary function, an initial accumulator value, and a list.
+
+- `foldl`: Processes list left-to-right. Use for sequential operations like summing or building up results from left.
+- `foldr`: Processes list right-to-left. Use when the associativity of right-to-left matters or when working with infinite lists.
+
+Syntax: `foldl (binary_function) initial_value list` or `foldr (binary_function) initial_value list`
+
 ## Essential Functions for Scripting and Debugging
 
 These functions are invaluable when writing Daml Scripts for testing or debugging your logic.

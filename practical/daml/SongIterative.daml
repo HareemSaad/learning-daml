@@ -1,0 +1,51 @@
+module SongIterative where
+
+import Daml.Script
+import DA.List (filter)
+import DA.Text (words)
+
+song : [(Text, Text)]
+song = [("do", "a deer, a female deer"), ("re", "a drop of golden sun"), ("mi", "a name, I call myself"), ("fa", "a long long way to run")]
+
+getFirstEls : [(Text, Text)] -> [Text]
+getFirstEls x = map (\y -> y._1) x
+
+testGetFirstEls : Script ()
+testGetFirstEls = script do
+    debug $ getFirstEls song
+
+getSecondEls : [(Text, Text)] -> [Text]
+getSecondEls x = map  (\y -> y._2) x
+
+testGetSecondEls : Script ()
+testGetSecondEls = script do
+    debug $ getSecondEls song
+
+termFrequency w sentence = do
+    let 
+      freq = Prelude.length (DA.List.filter (==w) (DA.Text.words sentence))
+      sentenceLength = Prelude.length (DA.Text.words sentence)
+    (intToDecimal freq) / (intToDecimal sentenceLength)
+
+multiTermFrequency : Text -> [Text] -> [Decimal]
+multiTermFrequency t strings = map (termFrequency t) strings
+
+multiTermFrequencyUsingFold : Text -> [Text] -> [Decimal]
+multiTermFrequencyUsingFold t strings =
+    foldr (\y acc -> termFrequency t y :: acc) [] strings
+
+testMultiTermFrequency = script do 
+    let x = "hello"
+    let y = [ "hello from the other side I must have called a thousand times", 
+            "You say goodbye and I say hello hello hello",
+            "hello is it me you’re looking for",
+            "hello hello is anyone home"
+            ]
+
+    debug $ multiTermFrequency x y
+    debug $ multiTermFrequencyUsingFold x y
+    return()
+
+allOtherTests = script do
+    debug $ getFirstEls song
+    debug $ getSecondEls song

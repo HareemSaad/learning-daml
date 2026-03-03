@@ -1,0 +1,39 @@
+module Iterative where
+
+import Daml.Script
+
+fibonacci: Int -> Int
+fibonacci n
+    | n <= 2 = 1
+    | otherwise = fibonacci (n - 2) + fibonacci (n - 1)
+
+
+testFibonacci : Script ()
+testFibonacci = script do
+    debug $ fibonacci 7
+
+-- A script to demonstrate using 'map'
+runMapExample : Script ()
+runMapExample = script do
+  let numbers = [10, 20, 30, 40]
+
+  -- We use 'map' to apply a lambda function that doubles each number.
+  let doubledNumbers = map (\n -> n * 2) numbers
+  debug $ "Original numbers: " <> show numbers      -- [10, 20, 30, 40]
+  debug $ "Doubled numbers: " <> show doubledNumbers  -- [20, 40, 60, 80]
+
+-- fold is used to "reduce" or "accumulate" a list down to a single value
+-- Daml provides two versions, foldl (left-to-right) and foldr (right-to-left)
+-- A fold function takes three arguments:
+-- 1. A binary function: This function takes the accumulator and the current list element as input and returns the new accumulator value.
+-- 2. An initial value: The starting value for the accumulator.
+-- 3. The list to process.
+runFoldSumExample = script do
+  let numbers = [1, 2, 3, 4, 5]
+  let total = foldl (+) 0 numbers
+  debug $ "The sum is: " <> show total -- The sum is: 15
+
+runFoldTextExample = script do
+  let numbers = [2, 0, 2, 5]
+  let textResult = foldl (\acc element -> acc <> show element) "" numbers
+  debug $ "The final text is: " <> textResult -- The final text is: "2025"
