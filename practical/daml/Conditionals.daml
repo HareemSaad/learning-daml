@@ -1,0 +1,48 @@
+module Conditionals where
+
+import Daml.Script
+
+-- A function to check if a trading fee is required
+getTradingFee : Decimal -> Decimal
+getTradingFee tradeAmount =
+  if tradeAmount >= 1000.0
+    then 5.0  -- The fee to apply
+    else 0.0  -- No fee
+
+testTradingFee: Script()
+testTradingFee = script do
+  let fee1 = getTradingFee 1500.0
+  debug fee1
+
+-- A function to determine a user's trading tier using Guards
+-- guards work like a switch statement in other languages.
+getUserTier : Int -> Text
+getUserTier tradeCount
+  | tradeCount > 1000 = "Diamond"
+  | tradeCount > 500  = "Gold"
+  | tradeCount > 100  = "Silver"
+  | otherwise         = "Bronze"
+
+testUserTier: Script()
+testUserTier = script do
+  let tier1 = getUserTier 1200
+  debug tier1
+
+-- case expressions allow you to match on specific values
+-- First, let's define a custom data type for user status
+data UserStatus = Active | Inactive | Suspended
+
+-- This function uses a 'case' expression to return a message based on the status
+getStatusMessage : UserStatus -> Text
+getStatusMessage status =
+  case status of
+    Active    -> "The user is active and in good standing."
+    Inactive  -> "The user has not logged in recently."
+    Suspended -> "The user account is suspended."
+
+dataUserStatusScript : Script ()
+dataUserStatusScript = script do 
+    let
+        st : UserStatus
+        st = Active
+    debug $ getStatusMessage st  -- "The user is active and in good standing."

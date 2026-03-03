@@ -1,0 +1,59 @@
+module ControlFlow where
+
+import Daml.Script
+
+getLetterGradeUsingIf : Decimal -> Text
+getLetterGradeUsingIf score =
+    if (score >= 90.0) then "A"
+    else if (score >= 80.0) then "B"
+    else if (score >= 70.0) then "C"
+    else "F"
+
+
+getScoreUsingCase: Text -> Text
+getScoreUsingCase letter = case(letter) of
+    "A" -> "90 to 100"
+    "B" -> "80 to 89"
+    "C" -> "70 to 79"
+    "F" -> "0 to 69"
+    _ -> "Unknown grade"
+
+getLetterGradeUsingGuards: Decimal -> Text
+getLetterGradeUsingGuards score
+    | (score >= 90.0) =   "A"
+    | (score >= 80.0) =   "B"
+    | (score >= 70.0) =   "C"
+    | otherwise =   "F"
+
+getAverageGradeLetter: Decimal -> Decimal -> Text
+getAverageGradeLetter score1 score2
+    | (score >= 90.0) =   "A"
+    | (score >= 80.0) =   "B"
+    | (score >= 70.0) =   "C"
+    | (score >= 0.0) = "F"
+    | otherwise = "Unknown grade"
+    where score = (score1 + score2) / 2.0
+
+testGrades = script do 
+    debug $ getLetterGradeUsingIf 90.0
+    debug $ getLetterGradeUsingIf 85.0
+    debug $ getLetterGradeUsingIf 75.0
+    debug $ getLetterGradeUsingIf 65.00
+    debug "----------"
+    debug $ getScoreUsingCase "A"
+    debug $ getScoreUsingCase "B"
+    debug $ getScoreUsingCase "C"
+    debug $ getScoreUsingCase "F"
+    debug $ getScoreUsingCase "X"
+    debug "----------"
+    debug $ getLetterGradeUsingGuards 90.0
+    debug $ getLetterGradeUsingGuards 80.0
+    debug $ getLetterGradeUsingGuards 70.0
+    debug $ getLetterGradeUsingGuards 60.0
+    debug "----------"
+    debug $ getAverageGradeLetter 75.0 83.0
+    debug $ getAverageGradeLetter 95.0 83.0
+    debug $ getAverageGradeLetter 98.0 83.0
+    debug $ getAverageGradeLetter 60.0 70.0
+
+    return ()

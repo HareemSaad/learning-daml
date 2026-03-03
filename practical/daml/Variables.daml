@@ -1,0 +1,17 @@
+module Variables where
+
+import Daml.Script
+
+anInteger : Int = 2
+
+anotherInteger : Int
+anotherInteger = 2
+
+implicitInteger = 10
+
+variableScript : Script ()
+
+variableScript = script do
+    debug $ "anInteger: " <> show anInteger
+    debug $ "anotherInteger: " <> show anotherInteger
+    debug $ "implicitInteger: " <> show implicitInteger
