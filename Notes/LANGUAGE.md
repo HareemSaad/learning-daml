@@ -125,6 +125,32 @@ data TypeName = TypeName with
 
 Use custom records to group related data together, improve type safety, and make code more readable and maintainable. The `deriving` clause automatically implements equality comparison (`Eq`) and string representation (`Show`) for your type.
 
+### Type Classes
+
+A type class defines a contract—a set of functions that any data type can implement. Type classes enable polymorphic behavior: writing generic functions that work with multiple different types.
+
+**Define a type class** using the `class` keyword:
+
+```daml
+class ClassName a where
+  functionName : Type
+```
+
+**Implement a type class** using the `instance` keyword:
+
+```daml
+instance ClassName ConcreteType where
+  functionName = implementation
+```
+
+**Use type class constraints** in function signatures with `=>`:
+
+```daml
+functionName : ClassName a => a -> ReturnType
+```
+
+**When to use**: Type classes provide shared behaviors across unrelated types. Use them to write generic, reusable functions that work with any type that implements the class. This avoids code duplication and allows flexible, polymorphic code that can work with current and future types.
+
 ## Conditional Expressions
 
 ### Control Flow Patterns

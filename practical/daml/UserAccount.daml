@@ -1,0 +1,47 @@
+-- While deriving is great for common behaviors like equality (Eq) and display (Show), you will often want to define your own shared behaviors across different data types. In Daml, you achieve this by creating a type class.
+-- A type class is a contract or an interface that defines a set of functions. Any data type that wants to be a member of this class must provide a concrete implementation for those functions.
+-- You define a type class using the class keyword
+module UserAccount where
+
+import Daml.Script (Script, script, allocateParty)
+
+-- Defines a type class 'HasOwner' for any type 'a'.
+-- Any type 'a' that is an instance of this class must provide a 'getOwner' function.
+class HasOwner a where
+  getOwner : a -> Party
+
+data UserAccount = UserAccount with
+  user : Party
+  username : Text
+    deriving (Eq, Show)
+
+-- We tell the compiler how UserAccount implements the HasOwner contract.
+instance HasOwner UserAccount where
+  getOwner account = account.user
+
+data CompanyAsset = CompanyAsset with
+  assetId : Text
+  assetOwner : Party
+    deriving (Eq, Show)
+
+-- CompanyAsset also implements HasOwner, but its logic is slightly different.
+instance HasOwner CompanyAsset where
+  getOwner asset = asset.assetOwner
+
+-- This generic function checks if a given Party is the owner of a contract.
+-- It works with UserAccount, CompanyAsset, or any other 'HasOwner' type.
+isOwner : HasOwner a => Party -> a -> Bool
+isOwner party contract =
+  getOwner contract == party
+
+-- Example script demonstrating the generic function
+runTypeClassExample : Script ()
+runTypeClassExample = script do
+  p1 <- allocateParty "Alice"
+  p2 <- allocateParty "Bob"
+
+  let user = UserAccount with user = p1, username = "alice"
+  let asset = CompanyAsset with assetId = "Laptop-01", assetOwner = p2
+
+  debug $ "Is Alice the owner of the user account? " <> show (isOwner p1 user)  -- True
+  debug $ "Is Alice the owner of the company asset? " <> show (isOwner p1 asset) -- False
