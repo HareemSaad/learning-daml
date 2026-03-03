@@ -1,0 +1,33 @@
+-- In Daml, Option and Either are special data types used to handle computations that might not produce a simple, single value. They are Daml way of explicitly and safely managing potential absence and errors, which helps eliminate a whole class of common bugs.
+
+-- The Option type is used when a value might exist, or it might be absent. It is Daml's safe alternative to using null or None, which can often lead to unexpected errors in other languages.
+
+-- Think of an Option as a box. The box might contain something, or it might be empty. You cannot use the contents until you safely "open the box" to check. An Option can have one of two forms:
+
+-- Some a: The box contains a value of type a.
+-- None: The box is empty.
+
+module SafeDiv where
+
+import Daml.Script
+
+-- A function that returns 'Optional Int' instead of 'Int'
+safeDiv : Int -> Int -> Optional Int
+safeDiv x y =
+  if y == 0
+    then None          -- If dividing by zero, return nothing (None).
+    else Some (x / y)  -- Otherwise, return the result wrapped in 'Some'.
+
+runSafeDivExample : Script ()
+runSafeDivExample = script do
+  let successfulResult = safeDiv 10 2 -- Returns Some 5
+  let failedResult = safeDiv 10 0     -- Returns None
+
+  -- We can use a 'case' statement to safely handle the outcome
+  case successfulResult of
+    Some value -> debug $ "Success: " <> show value
+    None -> debug $ "Failure: Cannot divide by zero."
+
+  case failedResult of
+    Some value -> debug $ "Success: " <> show value
+    None -> debug $ "Failure: Cannot divide by zero."

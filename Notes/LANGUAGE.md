@@ -185,6 +185,30 @@ Each pattern offers different readability and maintainability benefits depending
 
 Syntax: `foldl (binary_function) initial_value list` or `foldr (binary_function) initial_value list`
 
+## Option Type
+
+The `Optional` type (or `Option` in some contexts) represents a value that may or may not exist. It safely handles absence without relying on null, preventing null-reference errors.
+
+**Forms**:
+
+- `Some a`: Contains a value of type `a`
+- `None`: Represents the absence of a value
+
+**Creating Optional values**:
+
+- `Some value`: Wrap an existing value
+- `None`: Represent absence
+
+**Handling Optional values**: Use `case` expressions to safely extract values:
+
+```daml
+case optionalValue of
+  Some x -> -- handle the value x
+  None -> -- handle absence
+```
+
+**When to use**: Return `Optional` from functions that might fail or produce no result (e.g., safe division by zero, searching for an element that may not exist, parsing that may fail). This forces callers to explicitly handle the possibility of absence, eliminating common programming errors from unexpected null/None values.
+
 ## Records
 
 ## Essential Functions for Scripting and Debugging

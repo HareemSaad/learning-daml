@@ -1,0 +1,20 @@
+-- There is a special mention for Option. Have you ever wondered how to access an element using an index from a List type? You can by importing the DA.List.Total library, specifically the double exclamation point operator, !!. For example, the code below shows how to use the operator.
+
+module ListExample where
+
+import Daml.Script
+import DA.List.Total ((!!))
+
+exampleAccessElement : Script()
+exampleAccessElement = script do
+  let 
+    li : [Int]
+    li = [1..5]
+    inList = li !! 3
+    notInList = li !! 10
+    getElementIfExists : Optional Int -> Text
+    getElementIfExists index = case index of
+      Some value -> show value
+      optional -> "Index out of range"
+  debug $ getElementIfExists inList
+  debug $ getElementIfExists notInList
