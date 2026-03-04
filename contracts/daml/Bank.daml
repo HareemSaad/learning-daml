@@ -1,0 +1,154 @@
+module Bank where
+
+import Daml.Script
+
+-- in daml State updates = contract replacement
+template Account 
+  with
+    owner : Party
+    balance : Int
+    bank : Party
+  where
+      -- `observer` [<party>]
+      -- Observers can see the contract/consequences of choice but cannot exercise choices on it.
+    observer owner
+    -- we put the signatory as bank instead of owner because in transfer when we recreate thhe recipient's account, we will need the recipient's signature as recipient is the signatory of the new account but the sender submits the txn.
+    signatory bank
+
+    choice Deposit : ContractId Account
+      with
+        amount : Int
+      controller owner
+      do 
+      -- this only updates the local variable `balance` and does not update the contract's state. To update the contract's state, we need to create a new contract with the updated balance and archive the old contract.
+      -- return (balance + amount)
+      create this with
+        balance = balance + amount
+
+    -- contractId Account means the address of the new contract that will be created after exercising this choice.
+    choice Withdraw : ContractId Account
+      with
+        amount : Int
+      -- even though bank is the signatory, the owner is the controller of the Withdraw choice, so the owner can exercise this choice
+      controller owner
+      do 
+      create this with
+        balance = balance - amount
+
+    -- `choice` <name> : <return type>
+    -- <name> must be unique within the template and starts with an uppercase letter
+    -- If no qualifier is present, choices are consuming
+    choice Transfers : (ContractId Account, ContractId Account)
+      with
+        amount : Int
+        recipient : Party
+      -- here the recipient will only see the transfer event "some account transferred" but not the account id so adding them as observer is moot.
+      -- `controller` [<party>]
+      -- You must make sure that the controller parties are observers (or signatories) of the contract, otherwise they cannot see the contract (and therefore cannot exercise the choice).
+      controller owner
+      do 
+      assert (balance >= amount)
+
+      -- save the new contract's contractId in a variable
+      senderAccount <- create this with
+        balance = balance - amount
+
+      recipientAccount <- create Account with
+        owner = recipient
+        balance = amount
+        bank = bank
+
+      return (senderAccount, recipientAccount)
+
+    -- choice is nonconsuming since it does not modify state, so no new contract needs to be deployed.
+    nonconsuming choice GetBalance : Int
+      controller owner
+      do return balance
+
+-- TESTS
+test : Script ()
+test = script do
+
+  -- Parties
+  bank <- allocateParty "Bank"
+  alice <- allocateParty "Alice"
+  bob <- allocateParty "Bob"
+
+  -- Users (Canton style)
+  aliceId <- validateUserId "alice"
+  bobId <- validateUserId "bob"
+
+  createUser (User aliceId (Some alice)) [CanActAs alice]
+  createUser (User bobId (Some bob)) [CanActAs bob]
+
+  -- Create Alice account
+  aliceAccount <- submit bank do
+    createCmd Account with
+      owner = alice
+      balance = 100
+      bank = bank
+
+  debug "Initial account created"
+
+  -----------------------------------------
+  -- TEST 1: Deposit
+  -----------------------------------------
+
+  aliceAccount2 <- submit alice do
+    exerciseCmd aliceAccount Deposit with
+      amount = 50
+
+  balanceAfterDeposit <- submit alice do
+    exerciseCmd aliceAccount2 GetBalance
+
+  debug ("Balance after deposit: " <> show balanceAfterDeposit)
+
+  assertMsg "Deposit failed" (balanceAfterDeposit == 150)
+
+  -----------------------------------------
+  -- TEST 2: Withdraw
+  -----------------------------------------
+
+  aliceAccount3 <- submit alice do
+    exerciseCmd aliceAccount2 Withdraw with
+      amount = 20
+
+  balanceAfterWithdraw <- submit alice do
+    exerciseCmd aliceAccount3 GetBalance
+
+  debug ("Balance after withdraw: " <> show balanceAfterWithdraw)
+
+  assertMsg "Withdraw failed" (balanceAfterWithdraw == 130)
+
+  -----------------------------------------
+  -- TEST 3: Transfer
+  -----------------------------------------
+
+  (aliceAccount4, bobAccount) <- submit alice do
+    exerciseCmd aliceAccount3 Transfers with
+      amount = 30
+      recipient = bob
+
+  aliceFinalBalance <- submit alice do
+    exerciseCmd aliceAccount4 GetBalance
+
+  bobBalance <- submit bob do
+    exerciseCmd bobAccount GetBalance
+
+  debug ("Alice balance after transfer: " <> show aliceFinalBalance)
+  debug ("Bob balance after transfer: " <> show bobBalance)
+
+  assertMsg "Transfer sender balance incorrect" (aliceFinalBalance == 100)
+  assertMsg "Transfer recipient balance incorrect" (bobBalance == 30)
+
+  -----------------------------------------
+  -- TEST 4: Insufficient balance should fail
+  -----------------------------------------
+
+  submitMustFail alice do
+    exerciseCmd aliceAccount4 Transfers with
+      amount = 500
+      recipient = bob
+
+  debug "All tests passed"
+
